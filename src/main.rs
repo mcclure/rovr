@@ -42,12 +42,12 @@ fn main() -> Result<(), LuaError> {
 
         // TODO lovrModules
 
+        let boot_lua = include_str!("resources/boot.lua");
+
         lua.load(
-            r#"
-                print("Printing from Lua", arg[1])
-            "#,
+            boot_lua
         )
-        .set_name("example code")?
+        .set_name("@boot.lua")?
         .exec()?;
 
         break;
