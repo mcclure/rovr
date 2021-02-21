@@ -1,5 +1,8 @@
 #![allow(unused_parens)]
 
+mod api;
+
+use mlua::prelude::LuaTable;
 use std::env;
 use mlua::{Lua};
 use mlua::prelude::LuaError;
@@ -39,6 +42,10 @@ fn main() -> Result<(), LuaError> {
 
         let globals = lua.globals();
         globals.set("arg", arg_table)?;
+
+        let package:LuaTable = globals.get("package")?;
+        let preload:LuaTable = package.get("preload")?;
+        api::load(&lua, preload)?;
 
         // TODO lovrModules
 
