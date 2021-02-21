@@ -2,15 +2,16 @@
 
 mod api;
 
-use mlua::prelude::LuaTable;
 use std::env;
-use mlua::{Lua};
-use mlua::prelude::LuaError;
+use mlua::{Lua, ThreadStatus, Value};
+use mlua::prelude::{LuaError, LuaTable, LuaFunction};
 
 fn main() -> Result<(), LuaError> {
     let mut args = env::args().fuse();
+    let mut restart = false;
     let arg0 = args.next();
     let arg1 = args.next();
+    let arg_rest:Vec<String> = args.collect();
 
     if (match arg1 {
         None => false, Some(ref x) => x == "-v" || x == "--version"
@@ -28,14 +29,14 @@ fn main() -> Result<(), LuaError> {
 
         let arg_table = lua.create_table()?;
         
-        match arg0 { None => (), Some(x) => arg_table.set("exe", x)? }
-        match arg1 { None => (), Some(x) => arg_table.set(0, x)? }
+        match arg0 { None => (), Some(ref x) => arg_table.set("exe", x.clone())? }
+        match arg1 { None => (), Some(ref x) => arg_table.set(0, x.clone())? }
 
-        // FIXME set "cookie"
+        // TODO set "cookie"
         {
             let mut idx = 1;
-            for arg in args {
-                arg_table.set(idx, arg)?;
+            for arg in &arg_rest {
+                arg_table.set(idx, arg.clone())?;
                 idx += 1;
             }
         }
@@ -51,13 +52,29 @@ fn main() -> Result<(), LuaError> {
 
         let boot_lua = include_str!("resources/boot.lua");
 
-        lua.load(
+        let coroutine:LuaFunction = lua.load(
             boot_lua
         )
         .set_name("@boot.lua")?
-        .exec()?;
+        .eval()?;
 
-        break;
+        let coroutine_thread = lua.create_thread(coroutine)?;
+        loop {
+            let coroutine_result = coroutine_thread.resume(())?;
+            if coroutine_thread.status() == ThreadStatus::Resumable {
+                // TODO SLEEP
+            } else {
+                match coroutine_result {
+                    Value::String(s) => { if (s == "restart") {restart = true } } // TODO COOKIE
+                    _ => ()
+                }
+                break;
+            }
+        }
+
+        if (!restart) {
+            break;
+        }
     }
 
     Ok(())
