@@ -1,6 +1,7 @@
 #![allow(unused_parens)]
 
 mod api;
+mod modules;
 
 use std::env;
 use mlua::{Lua, ThreadStatus, Value};

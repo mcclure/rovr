@@ -1,3 +1,5 @@
+#![allow(non_snake_case)] // This module contains Lua function implementations with Lua style names
+
 mod lovr;
 mod filesystem;
 
