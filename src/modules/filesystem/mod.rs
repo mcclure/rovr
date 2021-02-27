@@ -1,7 +1,18 @@
+use std::cell::RefCell;
 use std::path::PathBuf;
 
-//static mut root:Vec<PathBuf> = Vec::new(); // TODO
+struct State {
+	root:Vec<PathBuf>
+}
 
-pub fn init(exe:String) {
-//	root.push(exe.to_string()) // TODO
+thread_local! {
+	static STATE:RefCell<State> = RefCell::new(State {root:Vec::new()});
+}
+
+pub fn init(target:PathBuf) {
+	println!("Initial path {}", target.to_str().unwrap_or("(INVALID)"));
+	STATE.with(|state| {
+		let mut state = state.borrow_mut();
+		state.root.push(target)
+	})
 }

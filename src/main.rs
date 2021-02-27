@@ -30,11 +30,22 @@ fn main() -> Result<(), LuaError> {
 
         let arg_table = lua.create_table()?;
         
-        match arg0 { None => (), Some(ref x) => arg_table.set("exe", x.clone())? }
+        // Set arg[-1] and arg[exe]
+        let exe;
+        if let Some(ref x) = arg0 {
+            arg_table.set(-1, x.clone())?;
+            exe = x.clone();
+        } else {
+            exe = "rovr".to_string();
+        }
+        arg_table.set("exe", exe)?;
+
+        // Set arg[0]
         match arg1 { None => (), Some(ref x) => arg_table.set(0, x.clone())? }
 
         // TODO set "cookie"
-        {
+
+        { // Set arg[1] and later
             let mut idx = 1;
             for arg in &arg_rest {
                 arg_table.set(idx, arg.clone())?;

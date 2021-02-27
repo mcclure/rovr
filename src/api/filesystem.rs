@@ -3,6 +3,7 @@
 use mlua::Lua;
 use mlua::prelude::{LuaError, LuaResult, LuaValue, LuaString, LuaTable};
 use crate::modules::filesystem;
+use std::path::PathBuf;
 
 fn unimplemented(_: &Lua, _: ()) -> LuaResult<()> {
 	Err(LuaError::RuntimeError("This function is not implemented yet in rovr.".to_string()))
@@ -32,9 +33,9 @@ pub fn make(lua: &Lua, _: ()) -> Result<LuaTable, LuaError> {
 	let globals = lua.globals();
 
 	if let Ok(LuaValue::Table(arg)) = globals.get("arg") {
-		let exe:LuaString = arg.get("exe")?;
+		let target:LuaString = arg.get(0)?;
 
-		filesystem::init(exe.to_str()?.to_string())
+		filesystem::init(PathBuf::from(target.to_str()?))
 	} else {
 		return Err(LuaError::RuntimeError("Internal error: arg array not found".to_string()));
 	}
