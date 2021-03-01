@@ -16,6 +16,8 @@ pub fn load(lua: &Lua, table: LuaTable) -> Result<(), LuaError> {
 
 // API tools
 
+// FIXME: This is almost a precise copypaste of the versions in core/mod. Could this be generalized somehow?
+
 pub fn print_nonfatal(result: core::Result<()>) -> LuaResult<bool> {
 	if let Err(error) = result {
 		if (error.fatal) {

@@ -3,6 +3,7 @@ use std::fmt;
 pub enum ErrorKind {
 	FileNotFound(String),
 	FileNotAllowed(String),
+	FileWrongFormat(String),
 	FileExists(String)
 }
 
@@ -18,6 +19,7 @@ impl fmt::Display for Error {
         match &self.kind { // FIXME Andi 2020-02-28: I don't understand why the & is here but not on the s (it doesn't like &s)
         	ErrorKind::FileNotFound(s) => write!(f, "File not found: {}", s.clone()),
         	ErrorKind::FileNotAllowed(s) => write!(f, "File permissions denied: {}", s.clone()),
+        	ErrorKind::FileWrongFormat(s) => write!(f, "File format not understood: {}", s.clone()),
         	ErrorKind::FileExists(s) => write!(f, "Already exists: {}", s.clone())
         }
     }
