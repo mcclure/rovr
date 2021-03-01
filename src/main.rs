@@ -1,6 +1,7 @@
 #![allow(unused_parens)]
 
 mod api;
+mod core;
 mod modules;
 
 use std::env;

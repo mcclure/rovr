@@ -4,6 +4,7 @@ use mlua::Lua;
 use mlua::prelude::{LuaError, LuaResult, LuaValue, LuaString, LuaTable};
 use crate::modules::filesystem;
 use std::path::PathBuf;
+use super::forgive_nonfatal;
 
 fn unimplemented(_: &Lua, _: ()) -> LuaResult<()> {
 	Err(LuaError::RuntimeError("This function is not implemented yet in rovr.".to_string()))
@@ -29,13 +30,14 @@ fn getIdentity(_: &Lua, _: ()) -> LuaResult<()> {
 }
 
 
-pub fn make(lua: &Lua, _: ()) -> Result<LuaTable, LuaError> {
+pub fn make(lua: &Lua, _: ()) -> LuaResult<LuaTable> {
 	let globals = lua.globals();
 
 	if let Ok(LuaValue::Table(arg)) = globals.get("arg") {
 		let target:LuaString = arg.get(0)?;
+		let targetString = target.to_str()?;
 
-		filesystem::init(PathBuf::from(target.to_str()?))
+		forgive_nonfatal(filesystem::init(PathBuf::from(targetString)))?;
 	} else {
 		return Err(LuaError::RuntimeError("Internal error: arg array not found".to_string()));
 	}
