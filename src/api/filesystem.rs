@@ -10,23 +10,22 @@ fn unimplemented(_: &Lua, _: ()) -> LuaResult<()> {
 	Err(LuaError::RuntimeError("This function is not implemented yet in rovr.".to_string()))
 }
 
-fn isFile(_: &Lua, _: ()) -> LuaResult<()> {
-	println!("Test");	
-
-    Err(LuaError::RuntimeError("This function is not implemented yet in rovr.".to_string()))
+fn isFile(_: &Lua, path: LuaString) -> LuaResult<bool> {
+	Ok(filesystem::is_file(path.to_str()?.to_string()))
 }
 
-fn getSource(_: &Lua, _: ()) -> LuaResult<()> {
-	println!("Test");	
-
-    Err(LuaError::RuntimeError("This function is not implemented yet in rovr.".to_string()))
+fn getSource(lua: &Lua, _: ()) -> LuaResult<LuaValue> {
+	match filesystem::get_source() {
+		Some(path) =>
+			if let Some(s) = path.to_str() { Ok(LuaValue::String(lua.create_string(&s.to_string())?)) }
+			else {Err(LuaError::RuntimeError("Could not convert path to string".to_string()))},
+		None =>	Ok(LuaValue::Nil)
+	}
 }
 
 
-fn getIdentity(_: &Lua, _: ()) -> LuaResult<()> {
-	println!("Test");	
-
-    Err(LuaError::RuntimeError("This function is not implemented yet in rovr.".to_string()))
+fn getIdentity(lua: &Lua, _: ()) -> LuaResult<LuaString> {
+	Ok(lua.create_string(&filesystem::get_identity())?)
 }
 
 
