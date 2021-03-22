@@ -4,7 +4,7 @@ mod lovr;
 mod filesystem;
 
 use mlua::Lua;
-use mlua::prelude::{LuaTable, LuaResult, LuaError};
+use mlua::prelude::{LuaTable, LuaFunction, LuaResult, LuaError};
 use crate::core;
 
 pub fn load(lua: &Lua, table: LuaTable) -> Result<(), LuaError> {
@@ -12,6 +12,22 @@ pub fn load(lua: &Lua, table: LuaTable) -> Result<(), LuaError> {
 	table.set("lovr.filesystem", lua.create_function(filesystem::make)?)?;
 
 	Ok(())
+}
+
+pub fn register_loader(lua: &Lua, loader: LuaFunction, index: i32) -> Result<(), LuaError> {
+	let globals = lua.globals();
+    
+	let table:LuaTable = globals.get("table")?;
+    let insert:LuaFunction = table.get("insert")?;
+    drop(table);
+
+    let package:LuaTable = globals.get("package")?;
+	let searchers:LuaTable = package.get("loaders")?; // TODO: In Lua 5.2 should be "searchers"
+	drop(package);
+
+	insert.call::<_, ()>((searchers, index, loader))?;
+
+    Ok(())
 }
 
 // API tools

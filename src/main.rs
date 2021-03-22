@@ -15,8 +15,8 @@ fn main() -> Result<(), LuaError> {
     let arg1 = args.next();
     let arg_rest:Vec<String> = args.collect();
 
-    if (match arg1 {
-        None => false, Some(ref x) => x == "-v" || x == "--version"
+    if (match &arg1 {
+        None => false, Some(x) => x == "-v" || x == "--version"
     }) {
         println!("ROVR 0.0.1");
         return Ok(()); // Print version and abort
