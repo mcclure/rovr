@@ -134,9 +134,11 @@ pub fn get_require_path() -> String {
 	})
 }
 
-pub fn init(target:PathBuf) -> Result<()> {
+pub fn init(target_option:Option<PathBuf>) -> Result<()> {
 	// TODO: Check fused exe first
-	print_nonfatal(mount(target))?;
+	if let Some(target) = target_option {
+		print_nonfatal(mount(target))?;
+	}
 
 	set_require_path("?.lua;?/init.lua".to_string());
 

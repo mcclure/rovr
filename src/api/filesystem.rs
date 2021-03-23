@@ -69,10 +69,14 @@ pub fn make(lua: &Lua, _: ()) -> LuaResult<LuaTable> {
 	let globals = lua.globals();
 
 	if let Ok(LuaValue::Table(arg)) = globals.get("arg") {
-		let target:LuaString = arg.get(0)?;
-		let targetString = target.to_str()?;
+		let target_value:LuaValue = arg.get(0)?;
+		let target = match target_value {
+			LuaValue::String(target_string) => Some(PathBuf::from(target_string.to_str()?)),
+			LuaValue::Nil => None,
+			_ => return Err(LuaError::RuntimeError("Internal error: arg[0] something nonsensical".to_string()))
+		};
 
-		forgive_nonfatal(filesystem::init(PathBuf::from(targetString)))?;
+		forgive_nonfatal(filesystem::init(target))?;
 	} else {
 		return Err(LuaError::RuntimeError("Internal error: arg array not found".to_string()));
 	}
