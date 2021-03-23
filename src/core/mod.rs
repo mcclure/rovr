@@ -1,5 +1,8 @@
 use std::fmt;
 
+pub const LOVR_VERSION:(i64,i64,i64) = (0,15,0);
+pub const ROVR_VERSION:(Option<i64>,Option<i64>,Option<i64>) = (Some(0),Some(1),Some(0)); // Todo: Auto generate
+
 pub enum ErrorKind {
 	FileNotFound(String),
 	FileNotAllowed(String),
