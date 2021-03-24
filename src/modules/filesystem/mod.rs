@@ -14,11 +14,12 @@ use crate::core::{Result, Error, ErrorKind, print_nonfatal};
 
 struct State {
 	root:Vec<PathBuf>,
-	require_path:String
+	require_path:String,
+	identity:String
 }
 
 thread_local! {
-	static STATE:RefCell<State> = RefCell::new(State {root:Vec::new(), require_path:"".to_string()});
+	static STATE:RefCell<State> = RefCell::new(State {root:Vec::new(), require_path:"".to_string(), identity:"".to_string()});
 }
 
 pub fn err<T>(e:ErrorKind) -> Result<T> {
@@ -93,7 +94,19 @@ pub fn get_source() -> Option<PathBuf> {
 }
 
 pub fn get_identity() -> String {
-	"rovr".to_string()
+	STATE.with(|state| {
+		let state = state.borrow_mut();
+
+		state.identity.clone()
+	})
+}
+
+pub fn set_identity(identity:String) {
+	STATE.with(|state| {
+		let mut state = state.borrow_mut();
+
+		state.identity = identity.clone();
+	})
 }
 
 pub fn mount(target:PathBuf) -> Result<()> {
@@ -139,6 +152,8 @@ pub fn init(target_option:Option<PathBuf>) -> Result<()> {
 	if let Some(target) = target_option {
 		print_nonfatal(mount(target))?;
 	}
+
+	set_identity("rovr".to_string());
 
 	set_require_path("?.lua;?/init.lua".to_string());
 

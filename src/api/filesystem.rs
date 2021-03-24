@@ -65,6 +65,11 @@ fn isFused(_:&Lua, _:()) -> LuaResult<LuaValue> {
 	Ok(LuaValue::Boolean(false)) // TODO
 }
 
+fn setIdentity(_: &Lua, identity: LuaString) -> LuaResult<()> {
+	filesystem::set_identity(identity.to_str()?.to_string());
+	Ok(())
+}
+
 pub fn make(lua: &Lua, _: ()) -> LuaResult<LuaTable> {
 	let globals = lua.globals();
 
@@ -109,7 +114,7 @@ pub fn make(lua: &Lua, _: ()) -> LuaResult<LuaTable> {
 	table.set("read", lua.create_function(unimplemented)?)?;
 	table.set("remove", lua.create_function(unimplemented)?)?;
 	table.set("setRequirePath", lua.create_function(unimplemented)?)?;
-	table.set("setIdentity", lua.create_function(unimplemented)?)?;
+	table.set("setIdentity", lua.create_function(setIdentity)?)?;
 	table.set("unmount", lua.create_function(unimplemented)?)?;
 	table.set("write", lua.create_function(unimplemented)?)?;
 	
