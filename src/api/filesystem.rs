@@ -12,11 +12,11 @@ fn unimplemented(_: &Lua, _: ()) -> LuaResult<()> {
 
 fn load_lua_file(lua: &Lua, path:String) -> LuaResult<LuaValue> {
 	let contents = filesystem::read_file(path.clone()).map_err(|e| LuaError::RuntimeError(e.to_string()))?;
-	return lua.load(
+	return Ok(LuaValue::Function(lua.load(
             &contents
         )
         .set_name(&path)?
-        .eval();
+        .into_function()?));
 }
 
 fn lua_loader<'a>(lua: &'a Lua, path: LuaString) -> LuaResult<LuaValue<'a>> {
@@ -34,7 +34,7 @@ fn lua_loader<'a>(lua: &'a Lua, path: LuaString) -> LuaResult<LuaValue<'a>> {
 	Ok(LuaValue::Nil)
 }
 
-fn lib_loader<'a>(_: &'a Lua, path: LuaString) -> LuaResult<LuaValue<'a>> {
+fn lib_loader<'a>(_: &'a Lua, _path: LuaString) -> LuaResult<LuaValue<'a>> {
 	let extension = if (cfg!(target_os = "windows")) { ".dll" } else { ".so" };
 
 	Ok(LuaValue::Nil)

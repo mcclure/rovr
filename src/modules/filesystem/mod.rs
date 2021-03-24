@@ -54,7 +54,6 @@ pub fn is_file(path: String) -> bool {
 		
 		for archive in &state.root {
 			if let Some(filepath) = path_for_string(archive.to_path_buf(), path.clone()) {
-				print!("Testing string {}", filepath.to_string_lossy());
 				if (filepath.is_file()) {
 					return true;
 				}
@@ -71,7 +70,6 @@ pub fn read_file(path:String) -> Result<String> {
 		
 		for archive in &state.root {
 			if let Some(filepath) = path_for_string(archive.to_path_buf(), path.clone()) {
-				print!("Testing string {}", filepath.to_string_lossy());
 				if (filepath.is_file()) {
 					return match fs::read_to_string(filepath) {
 						Ok(contents) => Ok(contents),
