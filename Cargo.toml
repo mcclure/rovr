@@ -6,4 +6,5 @@ edition = "2018"
 features = ["safe-lua"]
 
 [dependencies]
+cfg-if = "1.0.0"
 mlua = {version="0.5.1", features=["luajit", "vendored"]}

@@ -7,6 +7,7 @@ mod modules;
 use std::env;
 use mlua::{Lua, ThreadStatus, Value};
 use mlua::prelude::{LuaError, LuaTable, LuaFunction};
+use cfg_if::cfg_if;
 
 fn main() -> Result<(), LuaError> {
     let mut args = env::args().fuse();
@@ -25,11 +26,13 @@ fn main() -> Result<(), LuaError> {
     // FIXME handle --console
 
     loop { // Run actual program
-        let lua = if cfg!(feature = "safe-lua") {
-            Lua::new() // No `debug` library
-        } else {
-            unsafe { Lua::unsafe_new() }
-        };
+        let lua = {cfg_if! {
+            if #[cfg(feature = "safe-lua")] {
+                Lua::new() // No `debug` library
+            } else {
+                unsafe { Lua::unsafe_new() }
+            }
+        }};
 
         // TODO: luax_setmainthread(L);
 
