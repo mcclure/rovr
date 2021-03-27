@@ -32,6 +32,11 @@ pub fn register_loader(lua: &Lua, loader: LuaFunction, index: i32) -> Result<(),
 
 // API tools
 
+// FIXME: This could be done with Into
+pub fn core_result_to_lua<T>(result: core::Result<T>) -> LuaResult<T> {
+	result.map_err(|e| LuaError::RuntimeError(e.to_string()))
+}
+
 // FIXME: This is almost a precise copypaste of the versions in core/mod. Could this be generalized somehow?
 
 pub fn print_nonfatal(result: core::Result<()>) -> LuaResult<bool> {

@@ -4,14 +4,14 @@ use mlua::Lua;
 use mlua::prelude::{LuaError, LuaResult, LuaValue, LuaString, LuaTable};
 use crate::modules::filesystem;
 use std::path::PathBuf;
-use super::forgive_nonfatal;
+use super::{forgive_nonfatal, core_result_to_lua};
 
 fn unimplemented(_: &Lua, _: ()) -> LuaResult<()> {
 	Err(LuaError::RuntimeError("This function is not implemented yet in rovr.".to_string()))
 }
 
 fn load_lua_file(lua: &Lua, path:String) -> LuaResult<LuaValue> {
-	let contents = filesystem::read_file(path.clone()).map_err(|e| LuaError::RuntimeError(e.to_string()))?;
+	let contents = core_result_to_lua(filesystem::read_file(path.clone()))?;
 	return Ok(LuaValue::Function(lua.load(
             &contents
         )
@@ -65,6 +65,10 @@ fn isFused(_:&Lua, _:()) -> LuaResult<LuaValue> {
 	Ok(LuaValue::Boolean(false)) // TODO
 }
 
+fn read<'a>(lua: &'a Lua, path: LuaString) -> LuaResult<LuaString<'a>> {
+	lua.create_string(&core_result_to_lua(filesystem::read_file(path.to_str()?.to_string()))?)
+}
+
 fn setIdentity(_: &Lua, identity: LuaString) -> LuaResult<()> {
 	filesystem::set_identity(identity.to_str()?.to_string());
 	Ok(())
@@ -111,7 +115,7 @@ pub fn make(lua: &Lua, _: ()) -> LuaResult<LuaTable> {
 	table.set("load", lua.create_function(unimplemented)?)?;
 	table.set("mount", lua.create_function(unimplemented)?)?;
 	table.set("newBlob", lua.create_function(unimplemented)?)?;
-	table.set("read", lua.create_function(unimplemented)?)?;
+	table.set("read", lua.create_function(read)?)?;
 	table.set("remove", lua.create_function(unimplemented)?)?;
 	table.set("setRequirePath", lua.create_function(unimplemented)?)?;
 	table.set("setIdentity", lua.create_function(setIdentity)?)?;
