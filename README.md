@@ -14,7 +14,7 @@ Rovr is a port of LÖVR to Rust, with the VR parts removed.
 
 ## So you ported LOVE2D to VR, then ported it again to remove the VR?
 
-Well… basically, yes.
+Well… I didn't write LÖVR myself, but basically, yes.
 
 ## Why not just port LOVE2D to Rust?
 
@@ -23,10 +23,12 @@ That is a legitimate question.
 # Usage
 
 ```
-cargo run
+cargo run -- path/to/your/game
 ```
 
-…but it doesn't work, not yet.
+## API coverage
+
+This is an early experiment. Currently almost none of the [LÖVR API](https://lovr.org/docs/) is supported. The only present modules are `lovr` and `lovr.filesystem`, but many functions on `lovr.filesystem` are missing.
 
 # License
 
