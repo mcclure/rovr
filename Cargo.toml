@@ -3,6 +3,7 @@ name = "rovr"
 version = "0.1.0"
 authors = ["mcc <andi.m.mcclure@gmail.com>"]
 edition = "2018"
+features = ["safe-lua"]
 
 [dependencies]
 mlua = {version="0.5.1", features=["luajit", "vendored"]}

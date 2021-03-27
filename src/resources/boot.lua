@@ -243,7 +243,7 @@ end
 
 function lovr.errhand(message, traceback)
   message = tostring(message)
-  if debug and debug.traceback then
+  if debug then
     message = message .. formatTraceback(traceback or debug.traceback('', 4))
   end
   print('Error:\n' .. message)

@@ -25,7 +25,15 @@ fn main() -> Result<(), LuaError> {
     // FIXME handle --console
 
     loop { // Run actual program
-        let lua = Lua::new();
+        let lua;
+
+        #[cfg(feature = "safe-lua")] {
+            lua = Lua::new(); // No `debug` library
+        }
+
+        #[cfg(not(feature = "safe-lua"))] {
+            lua = unsafe { Lua::unsafe_new() };
+        }
 
         // TODO: luax_setmainthread(L);
 
