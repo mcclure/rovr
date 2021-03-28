@@ -1,15 +1,17 @@
 #![allow(non_snake_case)] // This module contains Lua function implementations with Lua style names
 
 mod lovr;
-mod filesystem;
+mod rovr;
 
 use mlua::Lua;
-use mlua::prelude::{LuaTable, LuaFunction, LuaResult, LuaError};
+use mlua::prelude::{LuaTable, LuaFunction, LuaResult, LuaError, LuaValue};
 use crate::core;
 
 pub fn load(lua: &Lua, table: LuaTable) -> Result<(), LuaError> {
 	table.set("lovr", lua.create_function(lovr::make)?)?;
-	table.set("lovr.filesystem", lua.create_function(filesystem::make)?)?;
+	table.set("lovr.filesystem", lua.create_function(lovr::filesystem::make)?)?;
+	table.set("rovr", lua.create_function(rovr::make)?)?;
+	table.set("rovr.display", lua.create_function(rovr::display::make)?)?;
 
 	Ok(())
 }
@@ -31,6 +33,13 @@ pub fn register_loader(lua: &Lua, loader: LuaFunction, index: i32) -> Result<(),
 }
 
 // API tools
+
+pub fn int_or_nil<'a>(v:Option<i64>) -> LuaValue<'a> {
+	match v {
+		Some(i) => LuaValue::Integer(i),
+		None => LuaValue::Nil
+	}
+}
 
 // FIXME: This could be done with Into
 pub fn core_result_to_lua<T>(result: core::Result<T>) -> LuaResult<T> {

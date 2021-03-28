@@ -4,7 +4,8 @@ use mlua::Lua;
 use mlua::prelude::{LuaError, LuaResult, LuaValue, LuaString, LuaTable};
 use crate::modules::filesystem;
 use std::path::PathBuf;
-use super::{forgive_nonfatal, core_result_to_lua};
+use crate::api;
+use api::{forgive_nonfatal, core_result_to_lua};
 
 fn unimplemented(_: &Lua, _: ()) -> LuaResult<()> {
 	Err(LuaError::RuntimeError("This function is not implemented yet in rovr.".to_string()))
@@ -90,8 +91,8 @@ pub fn make(lua: &Lua, _: ()) -> LuaResult<LuaTable> {
 		return Err(LuaError::RuntimeError("Internal error: arg array not found".to_string()));
 	}
 
-	super::register_loader(lua, lua.create_function(lua_loader)?, 2)?;
-	super::register_loader(lua, lua.create_function(lib_loader)?, 3)?;
+	api::register_loader(lua, lua.create_function(lua_loader)?, 2)?;
+	api::register_loader(lua, lua.create_function(lib_loader)?, 3)?;
 
 	let table = lua.create_table()?;
 

@@ -8,3 +8,4 @@ features = ["safe-lua"]
 [dependencies]
 cfg-if = "1.0.0"
 mlua = {version="0.5.1", features=["luajit", "vendored"]}
+winit = "0.24.0"

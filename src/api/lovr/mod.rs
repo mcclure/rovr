@@ -1,16 +1,14 @@
+// This file contains Lua functions
+
+pub mod filesystem;
+
 use mlua::Lua;
 use mlua::prelude::{LuaTable, LuaResult, LuaError, LuaValue, LuaMultiValue};
+use crate::api::int_or_nil;
 
 fn _setConf(lua: &Lua, conf: LuaValue) -> LuaResult<()> {
 	lua.set_named_registry_value("_lovrconf", conf)?;
 	Ok(())
-}
-
-fn int_or_nil<'a>(v:Option<i64>) -> LuaValue<'a> {
-	match v {
-		Some(i) => LuaValue::Integer(i),
-		None => LuaValue::Nil
-	}
 }
 
 fn getVersion(lua: &Lua, _: ()) -> LuaResult<LuaMultiValue> {
