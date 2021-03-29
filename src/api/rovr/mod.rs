@@ -1,3 +1,4 @@
+//! Modules visible to Lua API under "lovr" namespace
 // This file contains Lua functions
 
 pub mod display;

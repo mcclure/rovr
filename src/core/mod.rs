@@ -1,3 +1,5 @@
+//! Basic underlying utilities potentially needed by any rovr module
+
 use std::fmt;
 
 pub const LOVR_VERSION:(i64,i64,i64) = (0,15,0);

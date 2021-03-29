@@ -1,3 +1,5 @@
+//! Roughly corresponds to lovr.filesystem
+
 use std::cell::RefCell;
 use std::path::{PathBuf, Component};
 use std::fs;
