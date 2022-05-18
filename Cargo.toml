@@ -3,7 +3,14 @@ name = "rovr"
 version = "0.1.0"
 authors = ["mcc <andi.m.mcclure@gmail.com>"]
 edition = "2018"
-features = ["safe-lua"]
+
+[features]
+safe-lua = []
+lovr-modules = []
+
+[build-dependencies]
+cfg-if = "1.0.0"
+cmake = "0.1"
 
 [dependencies]
 cfg-if = "1.0.0"
